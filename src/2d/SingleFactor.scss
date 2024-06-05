@@ -1,0 +1,35 @@
+.single-factor {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: flex-start;
+        align-self: start;
+
+        .overlay-area {
+            margin: 16px;
+
+            .iteration {
+                pointer-events: none;
+                -webkit-user-select: none;
+                /* Safari */
+                -ms-user-select: none;
+                /* IE 10 and IE 11 */
+                user-select: none;
+                /* Standard syntax */
+            }
+        }
+    }
+
+    .canvas {
+        width: 100vw;
+        height: 100vh;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+    }
+}
