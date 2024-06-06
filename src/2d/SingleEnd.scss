@@ -12,7 +12,11 @@
         align-self: start;
 
         .overlay-area {
-            margin: 16px;
+            margin: 8px;
+            padding: 8px 8px 32px 8px;
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
 
             .iteration {
                 pointer-events: none;
@@ -22,6 +26,14 @@
                 /* IE 10 and IE 11 */
                 user-select: none;
                 /* Standard syntax */
+            }
+
+            .angle-limit {
+                display: flex;
+
+                span {
+                    margin-right: 4px;
+                }
             }
         }
     }
