@@ -1,5 +1,6 @@
 import SingleFactorBone from '../items/single-end-bone';
 import { Point, diffPoints, movePointAlone, pointAngle, pointDistance } from '../value/point';
+import { clampRange } from '../value/range';
 
 class SingleEndFABRIK {
     private static MAX_ITERATIONS = 30;
@@ -13,7 +14,12 @@ class SingleEndFABRIK {
                 const v1 = diffPoints(current.child.world[0], current.world[0]);
                 const v2 = diffPoints(target, current.world[0]);
                 const angle = pointAngle(v1, v2);
-                current.angle = current.angle + angle;
+                const newAngle = (current.angle + angle + 180) % 360 - 180;
+                if (useAngleLimit) {
+                    current.angle = clampRange(newAngle, current.angleLimit);
+                } else {
+                    current.angle = newAngle;
+                }
                 current = current.child;
             }
             return 1;
@@ -50,9 +56,9 @@ class SingleEndFABRIK {
                     const v1 = diffPoints(current.child.world[0], current.world[0]);
                     const v2 = diffPoints(worlds[i + 1], worlds[i]);
                     const angle = pointAngle(v1, v2);
-                    const newAngle = current.angle + angle;
-                    if (useAngleLimit && (newAngle < current.angleLimit.min || newAngle > current.angleLimit.max)) {
-                        current.angle = Math.min(Math.max(current.angleLimit.min, newAngle), current.angleLimit.max);
+                    const newAngle = (current.angle + angle + 180) % 360 - 180;
+                    if (useAngleLimit) {
+                        current.angle = clampRange(newAngle, current.angleLimit);
                     } else {
                         current.angle = newAngle;
                     }

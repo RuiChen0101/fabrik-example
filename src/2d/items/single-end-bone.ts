@@ -3,6 +3,7 @@ import { drawLine } from '../shape/line';
 import { drawCircle } from '../shape/circle';
 import { Point, pointLength } from '../value/point';
 import { drawArc } from '../shape/arc';
+import { drawText } from '../shape/text';
 
 class SingleFactorBone {
     private _pos: Point;
@@ -10,14 +11,14 @@ class SingleFactorBone {
     private _parent: SingleFactorBone | null = null;
     private _child: SingleFactorBone | null = null;
     private _length: number = 0;
-    private _angleLimit: Range = { min: 0, max: 360 };
+    private _angleLimit: Range = { min: -180, max: 180 };
 
     public set pos(pos: Point) {
         this._pos = pos;
     }
 
     public set angle(angle: number) {
-        this._angle = angle;
+        this._angle = (angle + 180) % 360 - 180;
     }
 
     public set angleLimit(range: Range) {
@@ -66,7 +67,7 @@ class SingleFactorBone {
 
         const x = this._pos.x * cos - this._pos.y * sin + parentPos.x;
         const y = this._pos.x * sin + this._pos.y * cos + parentPos.y;
-        const angle = (this._angle + parentAngle) % 360;
+        const angle = ((this._angle + parentAngle + 180) % 360) - 180;
 
         return [{ x, y }, angle];
     }
@@ -101,8 +102,8 @@ class SingleFactorBone {
             drawArc(canvas, context, {
                 pos,
                 radius: 15,
-                startAngle: (this._angleLimit.min + _angle) % 360,
-                endAngle: (this._angleLimit.max + _angle) % 360,
+                startAngle: (this._angleLimit.min + _angle - this.angle) % 360,
+                endAngle: (this._angleLimit.max + _angle - this.angle) % 360,
                 borderColor: "#00f",
                 borderWidth: 5
             });
@@ -113,6 +114,15 @@ class SingleFactorBone {
             radius: 8,
             color: "#f00",
             borderWidth: 0
+        });
+
+        drawText(canvas, context, {
+            pos: { x: pos.x, y: pos.y - 20 },
+            text: `${this.angle.toFixed(2)}°`,
+            fontSize: 16,
+            vAlign: 'bottom',
+            hAlign: 'center',
+            color: "#000"
         });
     }
 }
