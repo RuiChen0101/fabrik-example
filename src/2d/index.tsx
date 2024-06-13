@@ -1,5 +1,5 @@
+import { Outlet } from 'react-router-dom';
 import { Component, ReactNode } from 'react';
-import SingleEnd from './SingleEnd';
 
 import './index.scss';
 
@@ -9,7 +9,7 @@ class TwoDimension extends Component<any, TwoDimensionState> {
     render(): ReactNode {
         return (
             <div className="two-dimension">
-                <SingleEnd />
+                <Outlet />
             </div>
         )
     }

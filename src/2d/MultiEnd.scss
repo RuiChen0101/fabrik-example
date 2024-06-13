@@ -1,4 +1,4 @@
-.single-end {
+.multi-end {
     width: 100vw;
     height: 100vh;
     position: relative;
@@ -26,14 +26,6 @@
                 /* IE 10 and IE 11 */
                 user-select: none;
                 /* Standard syntax */
-            }
-
-            .angle-limit {
-                display: flex;
-
-                span {
-                    margin-right: 4px;
-                }
             }
         }
     }

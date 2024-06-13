@@ -4,6 +4,7 @@ import { Point } from '../value/point';
 class Target {
     private _pos: Point;
     private _pressed: boolean = false;
+    private _targetId: string;
 
     public set pressed(pressed: boolean) {
         this._pressed = pressed;
@@ -21,8 +22,13 @@ class Target {
         return this._pos;
     }
 
-    constructor(pos: Point) {
+    public get targetId(): string {
+        return this._targetId;
+    }
+
+    constructor(pos: Point, targetId: string) {
         this._pos = pos;
+        this._targetId = targetId;
     }
 
     public checkHit(pos: Point): boolean {

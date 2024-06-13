@@ -1,13 +1,13 @@
 import Target from './items/target';
 import { Range } from './value/range';
-import SingleEndBone from './items/single-end-bone';
+import Bone from './items/bone';
 import { Component, ReactNode, createRef } from 'react';
-import SingleEndFABRIK from './fabrik/single-end-fabrik';
-
+import FABRIK from './fabrik/fabrik';
+import { drawGridBackground } from './shape/grid-background';
 
 import './SingleEnd.scss';
+
 import MultiRangeSlider from '../component/multi-range-slider/MultiRangeSlider';
-import { drawGridBackground } from './shape/grid-background';
 
 interface SingleEndState {
     fabrikIteration: number;
@@ -18,15 +18,14 @@ class SingleEnd extends Component<any, SingleEndState> {
     private _canvasRef = createRef<HTMLCanvasElement>();
     private _ticker: any;
 
-    private _root?: SingleEndBone;
-    private _bone1?: SingleEndBone;
-    private _bone2?: SingleEndBone;
-    private _bone3?: SingleEndBone;
-    private _bone4?: SingleEndBone;
-    private _bone5?: SingleEndBone;
+    private _root?: Bone;
+    private _bone1?: Bone;
+    private _bone2?: Bone;
+    private _bone3?: Bone;
+
     private _target?: Target;
 
-    private _fabrik = new SingleEndFABRIK();
+    private _fabrik = new FABRIK();
 
     constructor(props: any) {
         super(props);
@@ -39,18 +38,14 @@ class SingleEnd extends Component<any, SingleEndState> {
     componentDidMount(): void {
         const [canvas, _] = this._getCanvas();
         this._setCanvasSize();
-        this._root = new SingleEndBone({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, 0);
-        this._bone1 = new SingleEndBone({ x: 100, y: 0 }, 0);
-        this._bone2 = new SingleEndBone({ x: 70, y: 0 }, 0);
-        this._bone3 = new SingleEndBone({ x: 75, y: 0 }, 0);
-        this._bone4 = new SingleEndBone({ x: 50, y: 0 }, 0);
-        this._bone5 = new SingleEndBone({ x: 50, y: 0 }, 0);
-        this._root.setChild(this._bone1);
-        this._bone1.setChild(this._bone2);
-        this._bone2.setChild(this._bone3);
-        this._bone3.setChild(this._bone4);
-        this._bone4.setChild(this._bone5);
-        this._target = new Target(this._bone5.world[0]);
+        this._root = new Bone('root', { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 0);
+        this._bone1 = new Bone('bone1', { x: 100, y: 0 }, 0);
+        this._bone2 = new Bone('bone2', { x: 100, y: 0 }, 0);
+        this._bone3 = new Bone('bone3', { x: 100, y: 0 }, 0);
+        this._bone2.addChild(this._bone3);
+        this._bone1.addChild(this._bone2);
+        this._root.addChild(this._bone1);
+        this._target = new Target(this._bone3.world[0], 'bone3');
         this._ticker = setInterval(this._draw, 1000 / 60);
         canvas.addEventListener('mousedown', this._onMouseDown);
     }
@@ -111,7 +106,7 @@ class SingleEnd extends Component<any, SingleEndState> {
         if (this._target!.pressed) {
             this._target!.pos = { x: x, y: y };
             if (this._root && this._target) {
-                const iteration = this._fabrik.resolve(this._root, this._target.pos, this.state.isAngleLimitEnabled);
+                const iteration = this._fabrik.resolve(this._root, [this._target], this.state.isAngleLimitEnabled);
                 this.setState({ fabrikIteration: iteration });
             }
         }
@@ -136,22 +131,16 @@ class SingleEnd extends Component<any, SingleEndState> {
             case "bone2":
                 this._bone2!.angleLimit = value;
                 break;
-            case "bone3":
-                this._bone3!.angleLimit = value;
-                break;
-            case "bone4":
-                this._bone4!.angleLimit = value;
-                break;
         }
         if (this._root && this._target) {
-            const iteration = this._fabrik.resolve(this._root, this._target.pos, this.props.isAngleLimitEnabled);
+            const iteration = this._fabrik.resolve(this._root, [this._target], this.props.isAngleLimitEnabled);
             this.setState({ fabrikIteration: iteration });
         }
     }
 
     render(): ReactNode {
         return (
-            <div className="single-factor">
+            <div className="single-end">
                 <div className="overlay">
                     <div className="overlay-area">
                         <span className={"iteration"}>iteration: {this.state.fabrikIteration}</span>
@@ -190,28 +179,6 @@ class SingleEnd extends Component<any, SingleEndState> {
                                 min={-180}
                                 max={180}
                                 onChange={(value) => this._setAngleLimit(value, "bone2")}
-                            />
-                        </div>
-                        <div className="angle-limit" style={{
-                            marginTop: "32px"
-                        }}>
-                            <span>bone3</span>
-                            <MultiRangeSlider
-                                className="slider"
-                                min={-180}
-                                max={180}
-                                onChange={(value) => this._setAngleLimit(value, "bone3")}
-                            />
-                        </div>
-                        <div className="angle-limit" style={{
-                            marginTop: "32px"
-                        }}>
-                            <span>bone4</span>
-                            <MultiRangeSlider
-                                className="slider"
-                                min={-180}
-                                max={180}
-                                onChange={(value) => this._setAngleLimit(value, "bone4")}
                             />
                         </div>
                     </div>

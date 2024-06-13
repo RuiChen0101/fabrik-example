@@ -1,17 +1,22 @@
+import { drawArc } from '../shape/arc';
+import { Point } from '../value/point';
 import { Range } from '../value/range';
+import { drawText } from '../shape/text';
 import { drawLine } from '../shape/line';
 import { drawCircle } from '../shape/circle';
-import { Point, pointLength } from '../value/point';
-import { drawArc } from '../shape/arc';
-import { drawText } from '../shape/text';
 
-class SingleFactorBone {
+class Bone {
+    private _id: string;
     private _pos: Point;
     private _angle: number;
-    private _parent: SingleFactorBone | null = null;
-    private _child: SingleFactorBone | null = null;
-    private _length: number = 0;
+    private _parent: Bone | null = null;
+    private _children: Bone[] = [];
+    private _childrenNames: Map<string, boolean> = new Map();
     private _angleLimit: Range = { min: -180, max: 180 };
+
+    public get id(): string {
+        return this._id;
+    }
 
     public set pos(pos: Point) {
         this._pos = pos;
@@ -33,23 +38,12 @@ class SingleFactorBone {
         return this._angle;
     }
 
-    public get parent(): SingleFactorBone | null {
+    public get parent(): Bone | null {
         return this._parent;
     }
 
-    public get child(): SingleFactorBone | null {
-        return this._child;
-    }
-
-    public get length(): number {
-        return this._length
-    }
-
-    public get totalLength(): number {
-        if (!this._child) {
-            return this._length;
-        }
-        return this._length + this._child.totalLength;
+    public get children(): Bone[] {
+        return this._children;
     }
 
     public get angleLimit(): Range {
@@ -72,22 +66,49 @@ class SingleFactorBone {
         return [{ x, y }, angle];
     }
 
-    constructor(pos: Point, angle: number) {
+    // in-order traversal
+    *[Symbol.iterator](): Generator<Bone> {
+        yield this;
+        for (const child of this._children) {
+            yield* child;
+        }
+    }
+
+    constructor(id: string, pos: Point, angle: number) {
+        this._id = id;
         this._pos = pos;
         this._angle = angle;
     }
 
-    public setChild(bone: SingleFactorBone): void {
-        this._child = bone;
-        this._length = pointLength(bone.pos);
-        bone._parent = this;
+    public addChild(child: Bone): void {
+        this._children.push(child);
+        this._childrenNames.set(child._id, true);
+        for (const grandChild of child) {
+            this._childrenNames.set(grandChild._id, true);
+        }
+        child._parent = this;
+    }
+
+    public findChild(id: string): Bone | null {
+        if (this._id == id) {
+            return this;
+        }
+        for (const child of this._children) {
+            if (child._id == id) {
+                return child;
+            }
+            if (child._childrenNames.has(id)) {
+                return child.findChild(id);
+            }
+        }
+        return null;
     }
 
     public draw(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, drawLimit: boolean): void {
         const [pos, _angle] = this.world;
 
-        if (this._child) {
-            const [childPos, _childAngle] = this._child.world;
+        for (const child of this._children) {
+            const [childPos, _childAngle] = child.world;
 
             drawLine(canvas, context, {
                 start: pos,
@@ -95,7 +116,7 @@ class SingleFactorBone {
                 color: "#000",
                 width: 5
             });
-            this._child.draw(canvas, context, drawLimit);
+            child.draw(canvas, context, drawLimit);
         }
 
         if (drawLimit) {
@@ -127,4 +148,4 @@ class SingleFactorBone {
     }
 }
 
-export default SingleFactorBone;
+export default Bone;
