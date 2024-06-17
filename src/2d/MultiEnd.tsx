@@ -1,13 +1,17 @@
-import Target from './items/target';
 import Bone from './items/bone';
+import Target from './items/target';
+import FABRIK from './fabrik/fabrik';
+import { Range } from './value/range';
 import { Component, ReactNode, createRef } from 'react';
 import { drawGridBackground } from './shape/grid-background';
 
 import './MultiEnd.scss';
-import FABRIK from './fabrik/fabrik';
+
+import MultiRangeSlider from '../component/multi-range-slider/MultiRangeSlider';
 
 interface MultiEndState {
     fabrikIteration: number;
+    isAngleLimitEnabled: boolean;
 }
 
 class MultiEnd extends Component<any, MultiEndState> {
@@ -33,6 +37,7 @@ class MultiEnd extends Component<any, MultiEndState> {
         super(props);
         this.state = {
             fabrikIteration: 0,
+            isAngleLimitEnabled: false
         };
     }
 
@@ -90,7 +95,7 @@ class MultiEnd extends Component<any, MultiEndState> {
         drawGridBackground(canvas, context);
 
         if (this._root) {
-            this._root.draw(canvas, context, false);
+            this._root.draw(canvas, context, this.state.isAngleLimitEnabled);
         }
         if (this._target1) {
             this._target1.draw(canvas, context);
@@ -129,7 +134,7 @@ class MultiEnd extends Component<any, MultiEndState> {
             this._target2!.pos = { x: x, y: y };
         }
         if (this._root && this._target1 && this._target2) {
-            const iteration = this._fabrik.resolve(this._root, [this._target1, this._target2], false);
+            const iteration = this._fabrik.resolve(this._root, [this._target1, this._target2], this.state.isAngleLimitEnabled);
             this.setState({ fabrikIteration: iteration });
         }
     }
@@ -143,12 +148,123 @@ class MultiEnd extends Component<any, MultiEndState> {
         canvas.removeEventListener('mouseout', this._onMouseUp);
     }
 
+    private _setAngleLimit = (value: Range, bone: string): void => {
+        switch (bone) {
+            case "root":
+                this._root!.angleLimit = value;
+                break;
+            case "bone1":
+                this._bone1!.angleLimit = value;
+                break;
+            case "bone2":
+                this._bone2!.angleLimit = value;
+                break;
+            case "bone3":
+                this._bone3!.angleLimit = value;
+                break;
+            case "bone4":
+                this._bone4!.angleLimit = value;
+                break;
+            case "bone6":
+                this._bone6!.angleLimit = value;
+                break;
+            case "bone7":
+                this._bone7!.angleLimit = value;
+                break;
+        }
+        if (this._root && this._target1 && this._target2) {
+            const iteration = this._fabrik.resolve(this._root, [this._target1, this._target2], this.state.isAngleLimitEnabled);
+            this.setState({ fabrikIteration: iteration });
+        }
+    }
+
     render(): ReactNode {
         return (
             <div className="multi-end">
                 <div className="overlay">
                     <div className="overlay-area">
                         <span className="iteration">iteration: {this.state.fabrikIteration}</span>
+                        <div className="angle-limit-enable">
+                            <input id="limit-enable" type="checkbox" checked={this.state.isAngleLimitEnabled} onChange={(e) => {
+                                this.setState({ isAngleLimitEnabled: e.target.checked });
+                            }} />
+                            <label htmlFor="limit-enable">Set Angle Limit</label>
+                        </div>
+                        <div className="angle-limit">
+                            <span>root</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "root")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone1</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone1")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone2</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone2")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone3</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone3")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone4</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone4")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone6</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone6")}
+                            />
+                        </div>
+                        <div className="angle-limit" style={{
+                            marginTop: "32px"
+                        }}>
+                            <span>bone7</span>
+                            <MultiRangeSlider
+                                className="slider"
+                                min={-180}
+                                max={180}
+                                onChange={(value) => this._setAngleLimit(value, "bone7")}
+                            />
+                        </div>
                     </div>
                 </div>
                 <canvas id="canvas" ref={this._canvasRef} />

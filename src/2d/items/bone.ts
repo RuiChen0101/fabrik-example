@@ -1,5 +1,5 @@
 import { drawArc } from '../shape/arc';
-import { Point } from '../value/point';
+import { Point, pointLength } from '../value/point';
 import { Range } from '../value/range';
 import { drawText } from '../shape/text';
 import { drawLine } from '../shape/line';
@@ -11,7 +11,7 @@ class Bone {
     private _angle: number;
     private _parent: Bone | null = null;
     private _children: Bone[] = [];
-    private _childrenNames: Map<string, boolean> = new Map();
+    private _childrenNames: Set<string> = new Set(); // indexed for quick path search, include self
     private _angleLimit: Range = { min: -180, max: 180 };
 
     public get id(): string {
@@ -78,14 +78,30 @@ class Bone {
         this._id = id;
         this._pos = pos;
         this._angle = angle;
+        this._childrenNames.add(id);
+    }
+
+    public getTotalLengthToward(id: string): number {
+        if (this._id == id) {
+            return 0;
+        }
+        if (!this._childrenNames.has(id)) {
+            throw new Error(`Bone with id ${id} is not a child of this bone`);
+        }
+        let length = 0;
+        for (const child of this._children) {
+            if (child._childrenNames.has(id)) {
+                length += pointLength(child.pos);
+                length += child.getTotalLengthToward(id);
+                break;
+            }
+        }
+        return length;
     }
 
     public addChild(child: Bone): void {
         this._children.push(child);
-        this._childrenNames.set(child._id, true);
-        for (const grandChild of child) {
-            this._childrenNames.set(grandChild._id, true);
-        }
+        this._childrenNames = new Set([...this._childrenNames, ...child._childrenNames]);
         child._parent = this;
     }
 

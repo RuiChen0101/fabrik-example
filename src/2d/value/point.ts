@@ -47,6 +47,7 @@ const rotatePoint = (p: Point, anchor: Point, degree: number): Point => {
     }
 }
 
+// fix p1 and move p2 alone p1p2 line to l distance
 const movePointAlone = (p1: Point, p2: Point, l: number): Point => {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;

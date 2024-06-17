@@ -27,6 +27,14 @@
                 user-select: none;
                 /* Standard syntax */
             }
+
+            .angle-limit {
+                display: flex;
+
+                span {
+                    margin-right: 4px;
+                }
+            }
         }
     }
 

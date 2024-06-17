@@ -1,8 +1,8 @@
-import Target from './items/target';
-import { Range } from './value/range';
 import Bone from './items/bone';
-import { Component, ReactNode, createRef } from 'react';
+import Target from './items/target';
 import FABRIK from './fabrik/fabrik';
+import { Range } from './value/range';
+import { Component, ReactNode, createRef } from 'react';
 import { drawGridBackground } from './shape/grid-background';
 
 import './SingleEnd.scss';
@@ -106,7 +106,7 @@ class SingleEnd extends Component<any, SingleEndState> {
         if (this._target!.pressed) {
             this._target!.pos = { x: x, y: y };
             if (this._root && this._target) {
-                const iteration = this._fabrik.resolve(this._root, [this._target], this.state.isAngleLimitEnabled);
+                const iteration = this._fabrik.resolveSingleEnd(this._root, this._target, this.state.isAngleLimitEnabled);
                 this.setState({ fabrikIteration: iteration });
             }
         }
@@ -133,7 +133,7 @@ class SingleEnd extends Component<any, SingleEndState> {
                 break;
         }
         if (this._root && this._target) {
-            const iteration = this._fabrik.resolve(this._root, [this._target], this.props.isAngleLimitEnabled);
+            const iteration = this._fabrik.resolveSingleEnd(this._root, this._target, this.state.isAngleLimitEnabled);
             this.setState({ fabrikIteration: iteration });
         }
     }
@@ -143,7 +143,7 @@ class SingleEnd extends Component<any, SingleEndState> {
             <div className="single-end">
                 <div className="overlay">
                     <div className="overlay-area">
-                        <span className={"iteration"}>iteration: {this.state.fabrikIteration}</span>
+                        <span className="iteration">iteration: {this.state.fabrikIteration}</span>
                         <div className="angle-limit-enable">
                             <input id="limit-enable" type="checkbox" checked={this.state.isAngleLimitEnabled} onChange={(e) => {
                                 this.setState({ isAngleLimitEnabled: e.target.checked });
