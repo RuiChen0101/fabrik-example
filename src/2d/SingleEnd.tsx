@@ -1,8 +1,8 @@
 import Bone from './items/bone';
 import Target from './items/target';
-import FABRIK from './fabrik/fabrik';
 import { Range } from './value/range';
 import { Component, ReactNode, createRef } from 'react';
+import SingleEndFABRIK from './fabrik/single-end-fabrik';
 import { drawGridBackground } from './shape/grid-background';
 
 import './SingleEnd.scss';
@@ -25,7 +25,7 @@ class SingleEnd extends Component<any, SingleEndState> {
 
     private _target?: Target;
 
-    private _fabrik = new FABRIK();
+    private _fabrik = new SingleEndFABRIK();
 
     constructor(props: any) {
         super(props);
@@ -105,10 +105,10 @@ class SingleEnd extends Component<any, SingleEndState> {
         const y = event.clientY - rect.top;
         if (this._target!.pressed) {
             this._target!.pos = { x: x, y: y };
-            if (this._root && this._target) {
-                const iteration = this._fabrik.resolveSingleEnd(this._root, this._target, this.state.isAngleLimitEnabled);
-                this.setState({ fabrikIteration: iteration });
-            }
+        }
+        if (this._root && this._target) {
+            const iteration = this._fabrik.resolve(this._root, this._target, this.state.isAngleLimitEnabled);
+            this.setState({ fabrikIteration: iteration });
         }
     }
 
@@ -133,7 +133,7 @@ class SingleEnd extends Component<any, SingleEndState> {
                 break;
         }
         if (this._root && this._target) {
-            const iteration = this._fabrik.resolveSingleEnd(this._root, this._target, this.state.isAngleLimitEnabled);
+            const iteration = this._fabrik.resolve(this._root, this._target, this.state.isAngleLimitEnabled);
             this.setState({ fabrikIteration: iteration });
         }
     }

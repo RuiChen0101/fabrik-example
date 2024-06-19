@@ -1,7 +1,7 @@
 import Bone from './items/bone';
 import Target from './items/target';
-import FABRIK from './fabrik/fabrik';
 import { Range } from './value/range';
+import MultiEndFABRIK from './fabrik/multi-end-fabrik';
 import { Component, ReactNode, createRef } from 'react';
 import { drawGridBackground } from './shape/grid-background';
 
@@ -31,7 +31,7 @@ class MultiEnd extends Component<any, MultiEndState> {
     private _target1?: Target;
     private _target2?: Target;
 
-    private _fabrik = new FABRIK();
+    private _fabrik = new MultiEndFABRIK();
 
     constructor(props: any) {
         super(props);
