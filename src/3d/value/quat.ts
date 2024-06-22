@@ -1,4 +1,4 @@
-import XYZValue from './xyz_value';
+import XYZValue, { crossXYZ, dotXYZ } from './xyz_value';
 
 class Quat {
     private _w: number;
@@ -88,6 +88,28 @@ const mulQuat = (a: Quat, b: Quat): Quat => {
     );
 }
 
+const xyzRotation = (a: XYZValue, b: XYZValue): Quat => {
+    const na = a.normalize();
+    const nb = b.normalize();
+
+    const dot = dotXYZ(na, nb);
+    const cross = crossXYZ(na, nb);
+
+    if (cross.length() === 0) {
+        return dot > 0 ? new Quat(1, 0, 0, 0) : new Quat(0, 1, 0, 0);
+    }
+
+    const s = Math.sqrt((1 + dot) * 2);
+    const invS = 1 / s;
+    return new Quat(s * 0.5, cross.x * invS, cross.y * invS, cross.z * invS);
+}
+
+const applyQuatRotation = (v: XYZValue, q: Quat): XYZValue => {
+    const qv = quatFromDegree(v);
+    const r = mulQuat(q, qv);
+    return r.toEuler();
+}
+
 const quatFromDegree = (value: XYZValue): Quat => {
     // degree to radian
     const roll = value.x * (Math.PI / 180);
@@ -119,6 +141,8 @@ const transferQuat = (xyz: XYZValue, quat: Quat): XYZValue => {
 export default Quat;
 export {
     mulQuat,
+    xyzRotation,
+    applyQuatRotation,
     quatFromDegree,
     transferQuat
 }

@@ -34,11 +34,14 @@ class Bone {
     }
 
     public set rotation(rotation: XYZValue) {
+        rotation.x = (rotation.x + +180) % 360 - 180;
+        rotation.y = (rotation.y + +180) % 360 - 180;
+        rotation.z = (rotation.z + +180) % 360 - 180;
         this._rotation = rotation;
     }
 
     public get length(): number {
-        return this._pos.norm();
+        return this._pos.length();
     }
 
     public get world(): [XYZValue, Quat] {
@@ -64,6 +67,24 @@ class Bone {
         for (const child of this._children) {
             yield* child;
         }
+    }
+
+    public getTotalLengthToward(name: string): number {
+        if (this._name == name) {
+            return 0;
+        }
+        if (!this._childrenNames.has(name)) {
+            throw new Error(`Bone with id ${name} is not a child of this bone`);
+        }
+        let length = 0;
+        for (const child of this._children) {
+            if (child._childrenNames.has(name)) {
+                length += child.length;
+                length += child.getTotalLengthToward(name);
+                break;
+            }
+        }
+        return length;
     }
 
     public eq(bone: Bone): boolean {
