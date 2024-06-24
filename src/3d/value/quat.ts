@@ -36,6 +36,10 @@ class Quat {
     public normalize(): Quat {
         const len = Math.hypot(this._w, this._x, this._y, this._z);
 
+        if (len === 1) {
+            return this;
+        }
+
         if (len > 0) {
             const invLen = 1 / len;
             return new Quat(this._w * invLen, this._x * invLen, this._y * invLen, this._z * invLen);
@@ -112,10 +116,25 @@ const xyzRotation = (a: XYZValue, b: XYZValue): Quat => {
 
 // gr: global rotation, r: local rotation, q: quat
 const applyQuatRotation = (gr: Quat, r: XYZValue, q: Quat): XYZValue => {
+    // local rotation to quaternion
     const qr = quatFromDegree(r);
-    const pr = mulQuat(gr, qr.inverse())
+    // extract parent's global rotation from global rotation
+    const pr = mulQuat(gr, qr.inverse());
+    // apply new rotation to global rotation and convert back to local rotation
     const nr = mulQuat(pr.inverse(), mulQuat(q, gr));
     return nr.toEuler();
+}
+
+const averageQuat = (quats: Quat[]): Quat => {
+    let [aw, ax, ay, az] = [0, 0, 0, 0];
+    for (let i = 0; i < quats.length; i++) {
+        aw += quats[i].w;
+        ax += quats[i].x;
+        ay += quats[i].y;
+        az += quats[i].z;
+    }
+    const avg = new Quat(aw / quats.length, ax / quats.length, ay / quats.length, az / quats.length);
+    return avg.normalize();
 }
 
 const quatFromDegree = (value: XYZValue): Quat => {
@@ -152,5 +171,6 @@ export {
     xyzRotation,
     applyQuatRotation,
     quatFromDegree,
-    transferQuat
+    transferQuat,
+    averageQuat
 }

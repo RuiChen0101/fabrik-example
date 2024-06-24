@@ -29,7 +29,7 @@ class SingleEnd extends Component<any, SingleEndState> {
             isLoading: true,
             cameraEnabled: true,
             fabrikIteration: 0,
-            root: new Bone('root', new XYZValue(0, 0, 0), new XYZValue(4.909412733568189, -0.04645663367750785, 2.9342290124949955))
+            root: new Bone('root', new XYZValue(0, 0, 0), new XYZValue(0, 0, 0))
         }
     }
 

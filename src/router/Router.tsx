@@ -11,6 +11,7 @@ const MultiEnd2D = withSuspense(lazy(() => import('../2d/MultiEnd')));
 import ThreeDimension from '../3d/index';
 
 const SingleEnd3D = withSuspense(lazy(() => import('../3d/SingleEnd')));
+const MultiEnd3D = withSuspense(lazy(() => import('../3d/MultiEnd')));
 
 class Router extends Component {
     render(): ReactNode {
@@ -23,6 +24,7 @@ class Router extends Component {
                     </Route>
                     <Route path="3d" element={<ThreeDimension />}>
                         <Route path="single-end" element={<SingleEnd3D />} />
+                        <Route path="multi-end" element={<MultiEnd3D />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
