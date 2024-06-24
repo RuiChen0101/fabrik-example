@@ -70,13 +70,13 @@ class SingleEndFABRIK {
                 }
             }
             { // Backward
-                worlds.set(root.id, root.pos);
                 for (const bone of root) {
                     if (bone.children.length === 0) {
                         continue;
                     }
-                    const v1 = diffPoints(bone.children[0].world[0], bone.world[0]);
-                    const v2 = diffPoints(worlds.get(bone.children[0].id)!, worlds.get(bone.id)!);
+                    const bw = bone.world[0];
+                    const v1 = diffPoints(bone.children[0].world[0], bw);
+                    const v2 = diffPoints(worlds.get(bone.children[0].id)!, bw);
                     const angle = pointAngle(v1, v2);
                     const newAngle = (bone.angle + angle + 180) % 360 - 180;
                     if (useAngleLimit) {
@@ -84,7 +84,6 @@ class SingleEndFABRIK {
                     } else {
                         bone.angle = newAngle;
                     }
-                    worlds.set(bone.id, bone.world[0]);
                 }
             }
         }

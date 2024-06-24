@@ -71,7 +71,7 @@ const moveXYZAlone = (p1: XYZValue, p2: XYZValue, l: number): XYZValue => {
 }
 
 // calculate the angle between two 3 dimensional vectors
-const zyxAngle = (a: XYZValue, b: XYZValue): number => {
+const xyzAngle = (a: XYZValue, b: XYZValue): number => {
     if (a.x === b.x && a.y === b.y && a.z === b.z) {
         return 0;
     }
@@ -83,15 +83,15 @@ const zyxAngle = (a: XYZValue, b: XYZValue): number => {
     let theta = ((a.x * b.x) + (a.y * b.y) + (a.z * b.z)) / (a.length() * b.length());
     theta = Math.min(Math.max(theta, -1), 1);
     const degree = (Math.acos(theta) * 180) / Math.PI;
-    const angle = (a.x * b.y - a.y * b.x) >= 0 ? degree : -degree;
+    const angle = (a.x * b.y - a.y * b.x + a.z * b.z) <= 0 ? degree : -degree;
     return (angle + 360) % 360;
 }
 
 // calculate the angle between two 3 dimensional vectors for each component
-const zyxAngleComponent = (a: XYZValue, b: XYZValue): XYZValue => {
-    const angleXY = zyxAngle(new XYZValue(a.x, a.y, 0), new XYZValue(b.x, b.y, 0));
-    const angleYZ = zyxAngle(new XYZValue(0, a.y, a.z), new XYZValue(0, b.y, b.z));
-    const angleZX = zyxAngle(new XYZValue(a.x, 0, a.z), new XYZValue(b.x, 0, b.z));
+const xyzAngleComponent = (a: XYZValue, b: XYZValue): XYZValue => {
+    const angleXY = xyzAngle(new XYZValue(a.x, a.y, 0), new XYZValue(b.x, b.y, 0));
+    const angleYZ = xyzAngle(new XYZValue(0, a.y, a.z), new XYZValue(0, b.y, b.z));
+    const angleZX = xyzAngle(new XYZValue(a.x, 0, a.z), new XYZValue(b.x, 0, b.z));
     return new XYZValue(angleYZ, angleZX, angleXY);
 }
 
@@ -104,6 +104,6 @@ export {
     crossXYZ,
     xyzDistance,
     moveXYZAlone,
-    zyxAngle,
-    zyxAngleComponent
+    xyzAngle,
+    xyzAngleComponent
 }

@@ -81,15 +81,15 @@ class MultiEndFABRIK {
                 }
             }
             { // Backward
-                worlds.set(root.id, root.pos);
                 for (const bone of root) {
                     if (bone.children.length === 0) {
                         continue;
                     }
                     const angleDeltas: number[] = [];
+                    const bw = bone.world[0];
                     for (const child of bone.children) {
-                        const v1 = diffPoints(child.world[0], bone.world[0]);
-                        const v2 = diffPoints(forwardWorlds.get(child.id)!.centroid, worlds.get(bone.id)!);
+                        const v1 = diffPoints(child.world[0], bw);
+                        const v2 = diffPoints(forwardWorlds.get(child.id)!.centroid, bw);
                         const angle = pointAngle(v1, v2);
                         angleDeltas.push((angle + 180) % 360 - 180);
                     }

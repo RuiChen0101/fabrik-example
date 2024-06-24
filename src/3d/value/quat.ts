@@ -33,11 +33,11 @@ class Quat {
         return new Quat(this._w, this._x, this._y, this._z);
     }
 
-    public norm(): Quat {
-        const len = this.dot(this);
+    public normalize(): Quat {
+        const len = Math.hypot(this._w, this._x, this._y, this._z);
 
         if (len > 0) {
-            const invLen = 1 / Math.sqrt(len);
+            const invLen = 1 / len;
             return new Quat(this._w * invLen, this._x * invLen, this._y * invLen, this._z * invLen);
         }
 
@@ -52,8 +52,16 @@ class Quat {
         return new Quat(-this._w, -this._x, -this._y, -this._z);
     }
 
+    public inverse(): Quat {
+        const normSquared = this._w * this._w + this._x * this._x + this._y * this._y + this._z * this._z;
+        if (normSquared === 0) {
+            return this;
+        }
+        return new Quat(this._w / normSquared, -this._x / normSquared, -this._y / normSquared, -this._z / normSquared);
+    }
+
     public toEuler(useRadian: boolean = false): XYZValue {
-        const n = this.norm();
+        const n = this.normalize();
 
         const roll = Math.atan2(2 * (n._w * n._x + n._y * n._z), 1 - 2 * (n._x * n._x + n._y * n._y));
 
@@ -99,15 +107,15 @@ const xyzRotation = (a: XYZValue, b: XYZValue): Quat => {
         return dot > 0 ? new Quat(1, 0, 0, 0) : new Quat(0, 1, 0, 0);
     }
 
-    const s = Math.sqrt((1 + dot) * 2);
-    const invS = 1 / s;
-    return new Quat(s * 0.5, cross.x * invS, cross.y * invS, cross.z * invS);
+    return new Quat(1 + dot, cross.x, cross.y, cross.z).normalize();
 }
 
-const applyQuatRotation = (v: XYZValue, q: Quat): XYZValue => {
-    const qv = quatFromDegree(v);
-    const r = mulQuat(q, qv);
-    return r.toEuler();
+// gr: global rotation, r: local rotation, q: quat
+const applyQuatRotation = (gr: Quat, r: XYZValue, q: Quat): XYZValue => {
+    const qr = quatFromDegree(r);
+    const pr = mulQuat(gr, qr.inverse())
+    const nr = mulQuat(pr.inverse(), mulQuat(q, gr));
+    return nr.toEuler();
 }
 
 const quatFromDegree = (value: XYZValue): Quat => {
