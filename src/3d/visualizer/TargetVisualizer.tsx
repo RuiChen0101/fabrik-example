@@ -9,6 +9,7 @@ interface TargetVisualizerProps {
     camera: Camera;
     render: WebGLRenderer;
     initPos?: XYZValue;
+    size: number;
     onTargetMove: (pos: XYZValue) => void;
     onDragStart?: () => void;
     onDragEnd?: () => void;
@@ -21,7 +22,7 @@ class TargetVisualizer extends Component<TargetVisualizerProps> {
     constructor(props: TargetVisualizerProps) {
         super(props);
         this._mesh = new Mesh();
-        this._mesh.geometry = new SphereGeometry(6)
+        this._mesh.geometry = new SphereGeometry(this.props.size)
         this._mesh.material = new MeshStandardMaterial({ color: 0xff0000 })
         this._mesh.position.set(this.props.initPos?.x ?? 0, this.props.initPos?.y ?? 0, this.props.initPos?.z ?? 0);
         this.props.scene.add(this._mesh);
@@ -54,6 +55,7 @@ class TargetVisualizer extends Component<TargetVisualizerProps> {
 
 export default function TargetVisualizerFunc(props: {
     initPos?: XYZValue;
+    size?: number;
     onTargetMove: (pos: XYZValue) => void;
     onDragStart?: () => void;
     onDragEnd?: () => void;
@@ -61,8 +63,6 @@ export default function TargetVisualizerFunc(props: {
     const { scene, gl, camera } = useThree();
 
     return (
-        <TargetVisualizer
-            scene={scene}
-            render={gl} camera={camera} {...props} />
+        <TargetVisualizer scene={scene} render={gl} camera={camera} size={props.size ?? 6} {...props} />
     )
 }

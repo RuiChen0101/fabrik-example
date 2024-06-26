@@ -102,6 +102,10 @@ class Bone {
         return true;
     }
 
+    public canLeadTo(name: string): boolean {
+        return this._childrenNames.has(name);
+    }
+
     public list(): Bone[] {
         const list: Bone[] = [];
         for (const bone of this) {

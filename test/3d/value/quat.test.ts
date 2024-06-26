@@ -14,6 +14,19 @@ describe('quat', () => {
         expect(r2.z).toBeCloseTo(0, 5);
     });
 
+    test('test transferQuat', () => {
+        const pos = new XYZValue(1, 2, 3);
+        const quat = new Quat(0.7071067811865476, 0, 0.7071067811865475, 0);
+        const r = transferQuat(pos, quat);
+        expect(r.x).toBeCloseTo(3, 5);
+        expect(r.y).toBeCloseTo(2, 5);
+        expect(r.z).toBeCloseTo(-1, 5);
+        const r2 = transferQuat(r, quat.inverse());
+        expect(r2.x).toBeCloseTo(1, 5);
+        expect(r2.y).toBeCloseTo(2, 5);
+        expect(r2.z).toBeCloseTo(3, 5);
+    });
+
     test('test xyzRotation will return correct angle of rotation', () => {
         const v1 = new XYZValue(-41.55416026062527, -23.32211631159055, 87.91661194440394);
         const v2 = new XYZValue(-50.80669294345101, -80.36956934365189, 30.97438095694281);

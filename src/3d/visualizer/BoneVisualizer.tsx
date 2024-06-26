@@ -6,6 +6,8 @@ import { ConeGeometry, Mesh, MeshStandardMaterial, Scene, SphereGeometry, Vector
 interface BoneVisualizerProps {
     scene: Scene;
     root: Bone;
+    nodeSize: number;
+    stickSize: number;
 }
 
 class BoneVisualizer extends Component<BoneVisualizerProps> {
@@ -23,7 +25,7 @@ class BoneVisualizer extends Component<BoneVisualizerProps> {
     private _createMeshes() {
         for (const bone of this.props.root) {
             const join = new Mesh()
-            join.geometry = new SphereGeometry(5)
+            join.geometry = new SphereGeometry(this.props.nodeSize)
             join.material = new MeshStandardMaterial({ color: 0xffff00 })
 
             const [world, _] = bone.world
@@ -35,7 +37,7 @@ class BoneVisualizer extends Component<BoneVisualizerProps> {
 
             if (bone.parent) {
                 const segment = new Mesh()
-                segment.geometry = new ConeGeometry(3, bone.length, 20)
+                segment.geometry = new ConeGeometry(this.props.stickSize, bone.length, 20)
                 segment.material = new MeshStandardMaterial({ color: 0xffff00 })
 
                 const [parentWorld, _] = bone.parent.world
@@ -94,10 +96,12 @@ class BoneVisualizer extends Component<BoneVisualizerProps> {
 
 export default function BoneVisualizerFunc(props: {
     root: Bone;
+    nodeSize?: number;
+    stickSize?: number;
 }) {
     const { scene } = useThree();
 
     return (
-        <BoneVisualizer scene={scene} root={props.root} />
+        <BoneVisualizer scene={scene} root={props.root} nodeSize={props.nodeSize ?? 5} stickSize={props.stickSize ?? 3} />
     )
 };

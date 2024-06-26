@@ -1,0 +1,39 @@
+.full-body {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: flex-start;
+        align-self: start;
+
+        .overlay-area {
+            margin: 8px;
+            padding: 8px 8px 32px 8px;
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+
+            .iteration {
+                pointer-events: none;
+                -webkit-user-select: none;
+                /* Safari */
+                -ms-user-select: none;
+                /* IE 10 and IE 11 */
+                user-select: none;
+                /* Standard syntax */
+            }
+        }
+    }
+
+    .canvas {
+        width: 100vw;
+        height: 100vh;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+    }
+}
