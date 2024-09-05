@@ -17,7 +17,7 @@ const FullBody = withSuspense(lazy(() => import('../3d/FullBody')));
 class Router extends Component {
     render(): ReactNode {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename="/fabrik-example">
                 <Routes>
                     <Route path="2d" element={<TwoDimension />}>
                         <Route path="single-end" element={<SingleEnd2D />} />
