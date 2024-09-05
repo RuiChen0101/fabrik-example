@@ -8,17 +8,17 @@ This is an example of the FABRIK algorithm implemented in Typescript. Using html
 
 ## 2D Example
 
-[2D Single Chain](https://ruichen0101.github.io/fabrik-example/2d/single-end)
+[2D Single Chain](https://ruichen0101.github.io/fabrik-example#/2d/single-end)
 
-[2D Multi Chain](https://ruichen0101.github.io/fabrik-example/2d/multi-end)
+[2D Multi Chain](https://ruichen0101.github.io/fabrik-example#/2d/multi-end)
 
 ## 3D Example
 
-[3D Single Chain](https://ruichen0101.github.io/fabrik-example/3d/single-end)
+[3D Single Chain](https://ruichen0101.github.io/fabrik-example#/3d/single-end)
 
-[3D Multi Chain](https://ruichen0101.github.io/fabrik-example/3d/multi-end)
+[3D Multi Chain](https://ruichen0101.github.io/fabrik-example#/3d/multi-end)
 
-[3D Full Body](https://ruichen0101.github.io/fabrik-example/3d/full-body)
+[3D Full Body](https://ruichen0101.github.io/fabrik-example#/3d/full-body)
 
 ## Running the project
 

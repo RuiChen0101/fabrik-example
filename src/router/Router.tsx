@@ -1,5 +1,5 @@
 import { Component, ReactNode, lazy } from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, HashRouter } from 'react-router-dom';
 
 import { withSuspense } from '../wrapper/WithSuspense';
 
@@ -17,7 +17,7 @@ const FullBody = withSuspense(lazy(() => import('../3d/FullBody')));
 class Router extends Component {
     render(): ReactNode {
         return (
-            <BrowserRouter basename="/fabrik-example">
+            <HashRouter>
                 <Routes>
                     <Route path="2d" element={<TwoDimension />}>
                         <Route path="single-end" element={<SingleEnd2D />} />
@@ -29,7 +29,7 @@ class Router extends Component {
                         <Route path="full-body" element={<FullBody />} />
                     </Route>
                 </Routes>
-            </BrowserRouter>
+            </HashRouter>
         );
     }
 }
